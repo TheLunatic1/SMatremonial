@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matrimonial Biodata Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        input, select, textarea {
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .error {
+            color: red;
+            font-size: 0.8em;
+            margin-top: 5px;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Matrimonial Biodata Form</h1>
+        <form id="biodataForm">
+            <label for="fullName">Full Name:</label>
+            <input type="text" id="fullName" required>
+            <div class="error" id="fullNameError"></div>
+
+            <label for="dob">Date of Birth:</label>
+            <input type="date" id="dob" required>
+            <div class="error" id="dobError"></div>
+
+            <label>Gender:</label>
+            <select id="gender" required>
+                <option value="">Select</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+            </select>
+            <div class="error" id="genderError"></div>
+
+            <label for="height">Height (in cm):</label>
+            <input type="number" id="height" min="100" max="250">
+            <div class="error" id="heightError"></div>
+
+            <label for="weight">Weight (in kg):</label>
+            <input type="number" id="weight" min="30" max="200">
+            <div class="error" id="weightError"></div>
+
+            <label for="education">Education:</label>
+            <input type="text" id="education" required>
+            <div class="error" id="educationError"></div>
+
+            <label for="occupation">Occupation:</label>
+            <input type="text" id="occupation" required>
+            <div class="error" id="occupationError"></div>
+
+            <label for="familyDetails">Family Details:</label>
+            <textarea id="familyDetails" rows="4"></textarea>
+            <div class="error" id="familyDetailsError"></div>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" required>
+            <div class="error" id="emailError"></div>
+
+            <label for="phone">Phone Number:</label>
+            <input type="tel" id="phone" pattern="[0-9]{11}" required>
+            <div class="error" id="phoneError"></div>
+
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+    <script>
+        const form = document.getElementById('biodataForm');
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+            if (validateForm()) {
+                alert('Form submitted successfully!');
+                form.reset();
+            }
+        });
+
+        function validateForm() {
+            let isValid = true;
+            
+            document.querySelectorAll('.error').forEach(el => el.textContent = '');
+
+            // Full Name
+            const fullName = document.getElementById('fullName').value.trim();
+            if (fullName === '') {
+                document.getElementById('fullNameError').textContent = 'Full Name is required.';
+                isValid = false;
+            }
+
+            // DOB
+            const dob = document.getElementById('dob').value;
+            if (dob === '') {
+                document.getElementById('dobError').textContent = 'Date of Birth is required.';
+                isValid = false;
+            } else {
+                const age = calculateAge(dob);
+                if (age < 18) {
+                    document.getElementById('dobError').textContent = 'You must be at least 18 years old.';
+                    isValid = false;
+                }
+            }
+
+            // Gender
+            const gender = document.getElementById('gender').value;
+            if (gender === '') {
+                document.getElementById('genderError').textContent = 'Gender is required.';
+                isValid = false;
+            }
+
+            // Height
+            const height = document.getElementById('height').value;
+            if (height && (height < 100 || height > 250)) {
+                document.getElementById('heightError').textContent = 'Height must be between 100 and 250 cm.';
+                isValid = false;
+            }
+
+            // Weight
+            const weight = document.getElementById('weight').value;
+            if (weight && (weight < 30 || weight > 200)) {
+                document.getElementById('weightError').textContent = 'Weight must be between 30 and 200 kg.';
+                isValid = false;
+            }
+
+            // Education
+            const education = document.getElementById('education').value.trim();
+            if (education === '') {
+                document.getElementById('educationError').textContent = 'Education is required.';
+                isValid = false;
+            }
+
+            // Occupation
+            const occupation = document.getElementById('occupation').value.trim();
+            if (occupation === '') {
+                document.getElementById('occupationError').textContent = 'Occupation is required.';
+                isValid = false;
+            }
+
+            // Email
+            const email = document.getElementById('email').value.trim();
+            if (email === '') {
+                document.getElementById('emailError').textContent = 'Email is required.';
+                isValid = false;
+            } else if (!validateEmail(email)) {
+                document.getElementById('emailError').textContent = 'Invalid email format.';
+                isValid = false;
+            }
+
+            // Phone No.
+            const phone = document.getElementById('phone').value.trim();
+            if (phone === '') {
+                document.getElementById('phoneError').textContent = 'Phone Number is required.';
+                isValid = false;
+            } else if (!/^\d{11}$/.test(phone)) {
+                document.getElementById('phoneError').textContent = 'Phone Number must be 11 digits.';
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+        function calculateAge(dob) {
+            const birthDate = new Date(dob);
+            const today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            return age;
+        }
+
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+    </script>
+</body>
+</html>
